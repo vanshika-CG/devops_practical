@@ -1,0 +1,42 @@
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Clone Code') {
+            steps {
+                git branch: 'main', url: 'https://github.com/vanshika-CG/devops_practical.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                dir('studentapp') {
+                    bat 'mvn clean compile'
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                dir('studentapp') {
+                    bat 'mvn test'
+                }
+            }
+        }
+
+        stage('Package') {
+            steps {
+                dir('studentapp') {
+                    bat 'mvn package'
+                }
+            }
+        }
+
+        stage('Archive') {
+            steps {
+                archiveArtifacts artifacts: 'studentapp/target/*.jar', fingerprint: true
+            }
+        }
+    }
+}
